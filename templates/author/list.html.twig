@@ -1,18 +1,42 @@
 <h1>Liste des auteurs</h1>
 
-<p>Nombre d'auteurs : {{ authorsCount }}</p>
-<p>Nombre total de livres : {{ totalBooks }}</p>
+{% if authors is defined and authors is not empty %}
+    {% set total_books = 0 %}
 
-{% if authors is defined and authors|length > 0 %}
-    <ul>
+    {# Boucle pour calculer le total #}
     {% for author in authors %}
-        <li>
-            <img src="{{ author.picture }}" alt="{{ author.username }}" width="100">
-            <strong>{{ author.username|upper }}</strong> - Email : {{ author.email }} - Livres : {{ author.nb_books }}
-            <a href="{{ path('author_details', {'id': author.id}) }}">Details</a>
-        </li>
+        {% set total_books = total_books + author.nb_books %}
     {% endfor %}
-    </ul>
+
+    <p><strong>Nombre total d’auteurs :</strong> {{ authors|length }}</p>
+    <p><strong>Nombre total de livres :</strong> {{ total_books }}</p>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Nombre de livres</th>
+            <th>Photo</th>
+        </tr>
+
+        {% for author in authors %}
+            <tr>
+                <td>{{ author.id }}</td>
+                <td>{{ author.username|upper}}</td>
+                <td>{{ author.email }}</td>
+                <td>{{ author.nb_books }}</td>
+                <td><img src="{{ author.picture }}" alt="{{ author.username }}" width="80"></td>
+                <td>
+                    <a href="{{ path('id-auteur', {id: author.id}) }}">Details</a>
+                </td>
+
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">Aucun auteur trouvé.</td>
+            </tr>
+        {% endfor %}
+    </table>
 {% else %}
-    <p>Aucun auteur disponible.</p>
+    <p>Aucune donnée à afficher. La liste est vide ou non définie.</p>
 {% endif %}

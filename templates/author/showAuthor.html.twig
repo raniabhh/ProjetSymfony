@@ -1,8 +1,24 @@
 <h1>Détails de l'auteur</h1>
 
-<img src="{{ author.picture }}" alt="{{ author.username }}" width="150">
-<p><strong>Nom : </strong>{{ author.username }}</p>
-<p><strong>Email : </strong>{{ author.email }}</p>
-<p><strong>Nombre de livres : </strong>{{ author.nb_books }}</p>
+<table border="1">
+    <tr>
+        <th>Photo</th>
+        <th>Nom</th>
+        <th>Email</th>
+        <th>Nombre de livres</th>
+        <th>ID</th>
+    </tr>
+    <tr>
+        <td><img src="{{ author.picture }}" alt="{{ author.username }}" width="100"></td>
 
-<a href="{{ path('authors_list') }}">Retour à la liste</a>
+        <td>{{ author.username|upper }}</td>
+
+        <td>{{ author.email }}</td>
+
+        <td>{{ author.nb_books }}</td>
+
+        <td>{{ author.id }}</td>
+    </tr>
+</table>
+<p><a href="{{ path('liste_auteur') }}">← Retour à la liste des auteurs</a></p>
+
