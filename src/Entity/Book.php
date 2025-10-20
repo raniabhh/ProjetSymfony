@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Author;
+use App\Entity\Reader;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 class Book
@@ -25,7 +27,10 @@ class Book
     #[ORM\Column]
     private ?bool $enabled = null;
 
-    #[ORM\ManyToOne(inversedBy: 'Book')]
+    #[ORM\Column(length: 255)]
+    private ?string $category = null; 
+
+    #[ORM\ManyToOne(inversedBy: 'books')] 
     private ?Author $author = null;
 
     /**
@@ -38,6 +43,7 @@ class Book
     {
         $this->readers = new ArrayCollection();
     }
+
 
     public function getId(): ?int
     {
@@ -52,7 +58,6 @@ class Book
     public function setTitle(string $title): static
     {
         $this->title = $title;
-
         return $this;
     }
 
@@ -64,7 +69,6 @@ class Book
     public function setPublicationDate(\DateTime $publicationDate): static
     {
         $this->publicationDate = $publicationDate;
-
         return $this;
     }
 
@@ -76,7 +80,17 @@ class Book
     public function setEnabled(bool $enabled): static
     {
         $this->enabled = $enabled;
+        return $this;
+    }
 
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function setCategory(string $category): static
+    {
+        $this->category = $category;
         return $this;
     }
 
@@ -88,7 +102,6 @@ class Book
     public function setAuthor(?Author $author): static
     {
         $this->author = $author;
-
         return $this;
     }
 
@@ -105,14 +118,12 @@ class Book
         if (!$this->readers->contains($reader)) {
             $this->readers->add($reader);
         }
-
         return $this;
     }
 
     public function removeReader(Reader $reader): static
     {
         $this->readers->removeElement($reader);
-
         return $this;
     }
 }

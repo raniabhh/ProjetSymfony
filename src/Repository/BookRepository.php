@@ -6,9 +6,6 @@ use App\Entity\Book;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<Book>
- */
 class BookRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -16,28 +13,37 @@ class BookRepository extends ServiceEntityRepository
         parent::__construct($registry, Book::class);
     }
 
-    //    /**
-    //     * @return Book[] Returns an array of Book objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('b.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function getNbrBooksDQL(): int
+    {
+        $dql = 'SELECT COUNT(b.id) FROM App\Entity\Book b';
+        return $this->getEntityManager()
+            ->createQuery($dql)
+            ->getSingleScalarResult();
+    }
 
-    //    public function findOneBySomeField($value): ?Book
-    //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function getNbrBooksQB(): int
+    {
+        return $this->createQueryBuilder('b')
+            ->select('COUNT(b.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function getBooksByAuthorDQL($authorId): array
+    {
+        $dql = 'SELECT b FROM App\Entity\Book b WHERE b.author = :authorId';
+        return $this->getEntityManager()
+            ->createQuery($dql)
+            ->setParameter('authorId', $authorId)
+            ->getResult();
+    }
+
+    public function getBooksByAuthorQB($authorId): array
+    {
+        return $this->createQueryBuilder('b')
+            ->where('b.author = :authorId')
+            ->setParameter('authorId', $authorId)
+            ->getQuery()
+            ->getResult();
+    }
 }

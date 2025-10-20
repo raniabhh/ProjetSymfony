@@ -1,42 +1,42 @@
-<h1>Liste des auteurs</h1>
+{% extends 'base.html.twig' %}
 
-{% if authors is defined and authors is not empty %}
-    {% set total_books = 0 %}
+{% block title %}Liste des livres{% endblock %}
 
-    {# Boucle pour calculer le total #}
-    {% for author in authors %}
-        {% set total_books = total_books + author.nb_books %}
-    {% endfor %}
+{% block body %}
+<h1>Liste des livres</h1>
 
-    <p><strong>Nombre total d’auteurs :</strong> {{ authors|length }}</p>
-    <p><strong>Nombre total de livres :</strong> {{ total_books }}</p>
-    <table border="1">
+<table border="1" cellspacing="0" cellpadding="5">
+    <thead>
         <tr>
-            <th>ID</th>
-            <th>Nom</th>
-            <th>Email</th>
-            <th>Nombre de livres</th>
-            <th>Photo</th>
+            <th>Title</th>
+            <th>Publication date</th>
+            <th>Published</th>
+            <th>Category</th>
+            <th>Author</th>
+            <th>Actions</th>
         </tr>
-
-        {% for author in authors %}
+    </thead>
+    <tbody>
+        {% for book in books %}
             <tr>
-                <td>{{ author.id }}</td>
-                <td>{{ author.username|upper}}</td>
-                <td>{{ author.email }}</td>
-                <td>{{ author.nb_books }}</td>
-                <td><img src="{{ author.picture }}" alt="{{ author.username }}" width="80"></td>
+                <td>{{ book.title }}</td>
+                <td>{{ book.publicationDate ? book.publicationDate|date('Y-m-d') : '' }}</td>
+                <td>{{ book.enabled ? 'Yes' : 'No' }}</td>
+                <td>{{ book.category ? book.category : '' }}</td>
+                <td>{{ book.author ? book.author.username : 'N/A' }}</td>
                 <td>
-                    <a href="{{ path('id-auteur', {id: author.id}) }}">Details</a>
+                    <a href="{{ path('book_show', {'id': book.id}) }}">Show</a> |
+                    <a href="{{ path('book_edit', {'id': book.id}) }}">Edit</a> |
+                    <a href="{{ path('book_delete', {'id': book.id}) }}" 
+                       onclick="return confirm('Are you sure?');">Delete</a>
                 </td>
-
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">Aucun auteur trouvé.</td>
+                <td colspan="6">No books found</td>
             </tr>
         {% endfor %}
-    </table>
-{% else %}
-    <p>Aucune donnée à afficher. La liste est vide ou non définie.</p>
-{% endif %}
+    </tbody>
+</table>
+
+{% endblock %}
